@@ -43,6 +43,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.BevelBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.Box;
 
 public class TelaAnimal extends JFrame {
 	
@@ -68,7 +69,6 @@ public class TelaAnimal extends JFrame {
 	 * Create the frame.
 	 */
 	public TelaAnimal() {
-		//setBounds(new Rectangle(0, 0, 600, 500));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 500);
 		contentPane = new JPanel();
@@ -80,46 +80,48 @@ public class TelaAnimal extends JFrame {
 		JTabbedPane tabPanel = new JTabbedPane(JTabbedPane.TOP);
 		tabPanel.setBounds(0, 0, 584, 461);
 		contentPane.add(tabPanel);
-
-		JPanel pnl1 = new JPanel();
-		tabPanel.addTab("Consulta", null, pnl1, null);
-		pnl1.setLayout(null);
-
-		JPanel pnlHeader = new JPanel();
-		pnlHeader.setBounds(0, 0, 579, 86);
-		pnl1.add(pnlHeader);
-		pnlHeader.setLayout(null);
-
-		JLabel lblTitle = new JLabel("Animais");
-		lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
-		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setBounds(123, 11, 327, 29);
-		pnlHeader.add(lblTitle);
-
-		JButton btnNovo = new JButton("Novo");
-		btnNovo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				//
-			}
-		});
-		btnNovo.setBounds(133, 51, 89, 23);
-		pnlHeader.add(btnNovo);
-
-		JPanel pnl2 = new JPanel();
-		tabPanel.addTab("Cadastro", null, pnl2, null);
-
-		JPanel pnlTable = new JPanel();
-		pnlTable.setBounds(0, 86, 569, 347);
-		pnl1.add(pnlTable);
-
-		pnlTable.setLayout(new BorderLayout(0, 0));
-	    JTable table = new javax.swing.JTable(null);
 	    final Object[][] dados = null;
 	    final MyTableModel myTableModel = new MyTableModel(dados);
-		table.setModel(myTableModel);
-		pnlTable.add(new JScrollPane(table));
 		
-
+		JTabbedPane TabCalotas = new JTabbedPane(JTabbedPane.TOP);
+		tabPanel.addTab("Calotas polares", null, TabCalotas, null);
+		
+		JTabbedPane TabAnimais = new JTabbedPane(JTabbedPane.TOP);
+		tabPanel.addTab("Animais", null, TabAnimais, null);
+		
+				JPanel TabConsultaAnimais = new JPanel();
+				TabAnimais.addTab("Consulta", null, TabConsultaAnimais, null);
+				TabConsultaAnimais.setLayout(null);
+				
+						JPanel pnlHeader = new JPanel();
+						pnlHeader.setBounds(0, 0, 579, 86);
+						TabConsultaAnimais.add(pnlHeader);
+						pnlHeader.setLayout(null);
+						
+								JLabel lblTitle = new JLabel("Animais");
+								lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
+								lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+								lblTitle.setBounds(123, 11, 327, 29);
+								pnlHeader.add(lblTitle);
+								
+										JButton btnNovo = new JButton("Novo");
+										btnNovo.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent arg0) {
+												//
+											}
+										});
+										btnNovo.setBounds(133, 51, 89, 23);
+										pnlHeader.add(btnNovo);
+										
+												JPanel pnlTable = new JPanel();
+												pnlTable.setBounds(0, 86, 569, 347);
+												TabConsultaAnimais.add(pnlTable);
+												
+														pnlTable.setLayout(new BorderLayout(0, 0));
+														JTable table = new javax.swing.JTable(null);
+														table.setModel(myTableModel);
+														pnlTable.add(new JScrollPane(table), BorderLayout.CENTER);
+														
 		JButton btnAbrir = new JButton("Abrir");
 		btnAbrir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -173,5 +175,8 @@ public class TelaAnimal extends JFrame {
 		});
 		btnLimpar.setBounds(465, 51, 89, 23);
 		pnlHeader.add(btnLimpar);
+		
+				JPanel TabCadAnimais = new JPanel();
+				TabAnimais.addTab("Cadastro", null, TabCadAnimais, null);
 	}
 }
