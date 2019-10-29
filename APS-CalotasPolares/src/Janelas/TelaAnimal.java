@@ -10,8 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.TableModel;
 
-import Database.LerArquivo;
-import Database.MyTableModel;
+import Database.*;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JTabbedPane;
@@ -44,11 +43,16 @@ import javax.swing.border.BevelBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.Box;
+import java.awt.Insets;
+import javax.swing.JTextField;
 
 public class TelaAnimal extends JFrame {
 	
 	private JPanel contentPane;
-
+	private JTextField edtCod;
+	private JTextField edtNComum;
+	private JTextField edtHabitat;
+	private JTextField edtNCientifico;
 	/**
 	 * Launch the application.
 	 */
@@ -94,25 +98,16 @@ public class TelaAnimal extends JFrame {
 				TabConsultaAnimais.setLayout(null);
 				
 						JPanel pnlHeader = new JPanel();
-						pnlHeader.setBounds(0, 0, 579, 86);
+						pnlHeader.setBounds(0, 0, 562, 86);
 						TabConsultaAnimais.add(pnlHeader);
 						pnlHeader.setLayout(null);
 						
-								JLabel lblTitle = new JLabel("Animais");
+								JLabel lblTitle = new JLabel("Consulta de Animais");
 								lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
 								lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-								lblTitle.setBounds(123, 11, 327, 29);
+								lblTitle.setBounds(121, 11, 327, 29);
 								pnlHeader.add(lblTitle);
-								
-										JButton btnNovo = new JButton("Novo");
-										btnNovo.addActionListener(new ActionListener() {
-											public void actionPerformed(ActionEvent arg0) {
-												//
-											}
-										});
-										btnNovo.setBounds(133, 51, 89, 23);
-										pnlHeader.add(btnNovo);
-										
+																												
 												JPanel pnlTable = new JPanel();
 												pnlTable.setBounds(0, 86, 569, 347);
 												TabConsultaAnimais.add(pnlTable);
@@ -147,8 +142,7 @@ public class TelaAnimal extends JFrame {
 						    dados[i][0] = data[0];
 						    dados[i][1] = data[1];
 						    dados[i][2] = data[2];
-						    dados[i][3] = data[3];
-						   
+						    dados[i][3] = data[3];		
 						}
 						final MyTableModel tableModel = (MyTableModel) table.getModel();
 						tableModel.setDados(dados);
@@ -167,16 +161,146 @@ public class TelaAnimal extends JFrame {
 		btnAbrir.setBounds(22, 52, 89, 23);
 		pnlHeader.add(btnAbrir);
 		
+		JPanel TabCadAnimais = new JPanel();
+		TabAnimais.addTab("Cadastro", null, TabCadAnimais, null);
+		TabCadAnimais.setLayout(null);
+		
+		JPanel pnlCadHeader = new JPanel();
+		pnlCadHeader.setLayout(null);
+		pnlCadHeader.setBounds(0, 0, 562, 171);
+		TabCadAnimais.add(pnlCadHeader);
+		
+		JLabel lblCadastroDeAnimais = new JLabel("Cadastro de Animais");
+		lblCadastroDeAnimais.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCadastroDeAnimais.setFont(new Font("Arial", Font.BOLD, 24));
+		lblCadastroDeAnimais.setBounds(121, 10, 327, 29);
+		pnlCadHeader.add(lblCadastroDeAnimais);
+		
+		JButton btnCadReset = new JButton("Limpar");
+		btnCadReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				final MyTableModel tableModel = (MyTableModel) table.getModel();
+				tableModel.setDados(new Object[0][4]);		
+				table.updateUI();
+			}
+		});
+		btnCadReset.setBounds(430, 137, 89, 23);
+		pnlCadHeader.add(btnCadReset);
+		
+		JLabel lblNewLabel = new JLabel("Id_Animal");
+		lblNewLabel.setBounds(23, 50, 83, 14);
+		pnlCadHeader.add(lblNewLabel);
+		
+		JLabel lblNewLabel_1 = new JLabel("Nome Comum");
+		lblNewLabel_1.setBounds(23, 92, 86, 14);
+		pnlCadHeader.add(lblNewLabel_1);
+		
+		edtCod = new JTextField();
+		edtCod.setBounds(23, 67, 86, 20);
+		pnlCadHeader.add(edtCod);
+		edtCod.setColumns(10);
+		
+		edtNComum = new JTextField();
+		edtNComum.setColumns(10);
+		edtNComum.setBounds(23, 108, 174, 20);
+		pnlCadHeader.add(edtNComum);
+		
+		edtHabitat = new JTextField();
+		edtHabitat.setColumns(10);
+		edtHabitat.setBounds(219, 108, 227, 20);
+		pnlCadHeader.add(edtHabitat);
+		
+		edtNCientifico = new JTextField();
+		edtNCientifico.setColumns(10);
+		edtNCientifico.setBounds(219, 67, 227, 20);
+		pnlCadHeader.add(edtNCientifico);
+		
+		JLabel lblNomeCientfico = new JLabel("Nome Cient\u00EDfico");
+		lblNomeCientfico.setBounds(219, 50, 83, 14);
+		pnlCadHeader.add(lblNomeCientfico);
+		
+		JLabel lblHabitat = new JLabel("Habitat");
+		lblHabitat.setBounds(219, 92, 87, 14);
+		pnlCadHeader.add(lblHabitat);
+		
+		JButton btnPilha = new JButton("Pilha");
+		btnPilha.setMargin(new Insets(2, 2, 2, 2));
+		btnPilha.setBounds(212, 137, 67, 23);
+		pnlCadHeader.add(btnPilha);
+		
+		JButton btnFila = new JButton("Fila");
+		btnFila.setMargin(new Insets(2, 2, 2, 2));
+		btnFila.setBounds(289, 137, 67, 23);
+		pnlCadHeader.add(btnFila);
+		
+		JPanel pnlCadTable = new JPanel();
+		pnlCadTable.setBounds(0, 169, 564, 226);
+		TabCadAnimais.add(pnlCadTable);
+		pnlCadTable.setLayout(new BorderLayout(0, 0));
+		JTable cadTable = new javax.swing.JTable(null);
+		cadTable.setModel(myTableModel);
+		pnlCadTable.add(new JScrollPane(cadTable), BorderLayout.CENTER);
+		
+		JButton btnNovo = new JButton("Novo");
+		btnNovo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TabAnimais.setSelectedIndex(1);
+			}
+		});
+		btnNovo.setBounds(133, 51, 89, 23);
+		pnlHeader.add(btnNovo);
+		
 		JButton btnLimpar = new JButton("Limpar");
 		btnLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-								
+				final MyTableModel tableModel = (MyTableModel) table.getModel();
+				tableModel.setDados(new Object[0][4]);		
+				table.updateUI();
 			}
 		});
 		btnLimpar.setBounds(465, 51, 89, 23);
 		pnlHeader.add(btnLimpar);
 		
-				JPanel TabCadAnimais = new JPanel();
-				TabAnimais.addTab("Cadastro", null, TabCadAnimais, null);
+		JButton btnInc = new JButton("Adicionar");
+		btnInc.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = cadTable.getRowCount();
+				final Object[][] dados = new Object[i+1][4];										
+				    dados[i][0] = edtCod.getText();
+				    dados[i][1] = edtNComum.getText();
+				    dados[i][2] = edtNCientifico.getText();
+				    dados[i][3] = edtHabitat.getText();		
+				
+				final MyTableModel tableModel = (MyTableModel) cadTable.getModel();
+				tableModel.setDados(dados);
+			    // notifica o componente de que houve alteração, para que ele atualize considerando agora os novos dados
+				cadTable.updateUI();			    				
+			}
+		});
+		
+		JButton btnDel = new JButton("Deletar");
+		btnDel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int i = cadTable.getRowCount() - 1;
+				if (i <= 0) {
+					final Object[][] dados = new Object[0][4];
+				}else {
+					final Object[][] dados = new Object[i][4];
+				}
+														
+				final MyTableModel tableModel = (MyTableModel) cadTable.getModel();
+				tableModel.setDados(dados);
+			    // notifica o componente de que houve alteração, para que ele atualize considerando agora os novos dados
+				cadTable.updateUI();	
+			}
+		});
+		btnDel.setMargin(new Insets(2, 2, 2, 2));
+		btnDel.setBounds(100, 137, 67, 23);
+		pnlCadHeader.add(btnDel);
+		
+		btnInc.setMargin(new Insets(2, 2, 2, 2));
+		btnInc.setBounds(10, 137, 62, 23);
+		pnlCadHeader.add(btnInc);
+						
 	}
 }
