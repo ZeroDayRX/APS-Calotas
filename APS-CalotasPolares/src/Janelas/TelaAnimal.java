@@ -180,8 +180,15 @@ public class TelaAnimal extends JFrame {
 		JButton btnCadReset = new JButton("Limpar");
 		btnCadReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				final MyTableModel tableModel = (MyTableModel) tableConsulta.getModel();
-				tableModel.setDados(new Object[0][4]);		
+				int dialogButton = JOptionPane.showConfirmDialog(null, "Realmente deseja apagar todos os dados da tabela ?");
+	            if(dialogButton == JOptionPane.YES_OPTION) {
+	            	for(int x = tableConsulta.getRowCount() - 1; x >=0; x--) {
+	            		((MyTableModel) tableConsulta.getModel()).removeRow(x);
+	            	}
+	            if(dialogButton == JOptionPane.NO_OPTION) {
+	                  JOptionPane.showMessageDialog(null, "Operação Cancelada.");
+	                }
+	              }
 				tableConsulta.updateUI();
 			}
 		});
@@ -265,17 +272,27 @@ public class TelaAnimal extends JFrame {
 		JButton btnInc = new JButton("Adicionar");
 		btnInc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int i = cadTable.getRowCount();
-				final Object[][] dados = new Object[i+1][4];										
-				    dados[i][0] = edtCod.getText();
-				    dados[i][1] = edtNComum.getText();
-				    dados[i][2] = edtNCientifico.getText();
-				    dados[i][3] = edtHabitat.getText();		
-				
-				final MyTableModel tableModel = (MyTableModel) cadTable.getModel();
-				tableModel.setDados(dados);
-			    // notifica o componente de que houve alteração, para que ele atualize considerando agora os novos dados
-				cadTable.updateUI();			    				
+				if(edtCod.getText().isEmpty() || edtNComum.getText().isEmpty() || edtNCientifico.getText().isEmpty() || edtHabitat.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(null, "Campos em branco. Por favor preencha todos os campos.");
+					
+				}else {
+					int i = cadTable.getRowCount();
+					final Object[][] dados = new Object[i+1][4];										
+					    dados[i][0] = edtCod.getText();
+					    dados[i][1] = edtNComum.getText();
+					    dados[i][2] = edtNCientifico.getText();
+					    dados[i][3] = edtHabitat.getText();
+					
+					final MyTableModel tableModel = (MyTableModel) cadTable.getModel();
+					tableModel.setDados(dados);
+				    // notifica o componente de que houve alteração, para que ele atualize considerando agora os novos dados
+					cadTable.updateUI();
+					edtCod.setText(null);
+					edtNComum.setText(null);
+					edtNCientifico.setText(null);
+					edtHabitat.setText(null);
+				}
+
 			}
 		});
 		
