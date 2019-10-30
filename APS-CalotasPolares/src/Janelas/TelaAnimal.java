@@ -8,6 +8,7 @@ import java.awt.FileDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import Database.*;
@@ -113,9 +114,9 @@ public class TelaAnimal extends JFrame {
 												TabConsultaAnimais.add(pnlTable);
 												
 														pnlTable.setLayout(new BorderLayout(0, 0));
-														JTable table = new javax.swing.JTable(null);
-														table.setModel(myTableModel);
-														pnlTable.add(new JScrollPane(table), BorderLayout.CENTER);
+														JTable tableConsulta = new javax.swing.JTable(null);
+														tableConsulta.setModel(myTableModel);
+														pnlTable.add(new JScrollPane(tableConsulta), BorderLayout.CENTER);
 														
 		JButton btnAbrir = new JButton("Abrir");
 		btnAbrir.addActionListener(new ActionListener() {
@@ -144,10 +145,10 @@ public class TelaAnimal extends JFrame {
 						    dados[i][2] = data[2];
 						    dados[i][3] = data[3];		
 						}
-						final MyTableModel tableModel = (MyTableModel) table.getModel();
+						final MyTableModel tableModel = (MyTableModel) tableConsulta.getModel();
 						tableModel.setDados(dados);
 					    // notifica o componente de que houve alteração, para que ele atualize considerando agora os novos dados
-					    table.updateUI();
+					    tableConsulta.updateUI();
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -179,9 +180,9 @@ public class TelaAnimal extends JFrame {
 		JButton btnCadReset = new JButton("Limpar");
 		btnCadReset.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				final MyTableModel tableModel = (MyTableModel) table.getModel();
+				final MyTableModel tableModel = (MyTableModel) tableConsulta.getModel();
 				tableModel.setDados(new Object[0][4]);		
-				table.updateUI();
+				tableConsulta.updateUI();
 			}
 		});
 		btnCadReset.setBounds(430, 137, 89, 23);
@@ -216,7 +217,7 @@ public class TelaAnimal extends JFrame {
 		pnlCadHeader.add(edtNCientifico);
 		
 		JLabel lblNomeCientfico = new JLabel("Nome Cient\u00EDfico");
-		lblNomeCientfico.setBounds(219, 50, 83, 14);
+		lblNomeCientfico.setBounds(219, 50, 123, 14);
 		pnlCadHeader.add(lblNomeCientfico);
 		
 		JLabel lblHabitat = new JLabel("Habitat");
@@ -253,9 +254,9 @@ public class TelaAnimal extends JFrame {
 		JButton btnLimpar = new JButton("Limpar");
 		btnLimpar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				final MyTableModel tableModel = (MyTableModel) table.getModel();
+				final MyTableModel tableModel = (MyTableModel) tableConsulta.getModel();
 				tableModel.setDados(new Object[0][4]);		
-				table.updateUI();
+				tableConsulta.updateUI();
 			}
 		});
 		btnLimpar.setBounds(465, 51, 89, 23);
@@ -281,16 +282,7 @@ public class TelaAnimal extends JFrame {
 		JButton btnDel = new JButton("Deletar");
 		btnDel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int i = cadTable.getRowCount() - 1;
-				if (i <= 0) {
-					final Object[][] dados = new Object[0][4];
-				}else {
-					final Object[][] dados = new Object[i][4];
-				}
-														
-				final MyTableModel tableModel = (MyTableModel) cadTable.getModel();
-				tableModel.setDados(dados);
-			    // notifica o componente de que houve alteração, para que ele atualize considerando agora os novos dados
+				((MyTableModel) cadTable.getModel()).removeRow(cadTable.getSelectedRow());
 				cadTable.updateUI();	
 			}
 		});
@@ -299,7 +291,7 @@ public class TelaAnimal extends JFrame {
 		pnlCadHeader.add(btnDel);
 		
 		btnInc.setMargin(new Insets(2, 2, 2, 2));
-		btnInc.setBounds(10, 137, 62, 23);
+		btnInc.setBounds(10, 137, 80, 23);
 		pnlCadHeader.add(btnInc);
 						
 	}
