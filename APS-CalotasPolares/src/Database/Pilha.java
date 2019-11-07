@@ -3,8 +3,9 @@ package Database;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Pilha {
 
+public class Pilha {
+	
 	  private List<Object> objetos = new LinkedList<Object>();
 
 	  public void insere(Object objeto) {
@@ -14,8 +15,16 @@ public class Pilha {
 	  public Object remove() {
 	    return this.objetos.remove(this.objetos.size() - 1);
 	  }
+	  
+	  public List<Object> getPilha() {
+		  return objetos;
+	  }
 
 	  public boolean vazia() {
-	    return this.objetos.size() == 0;
+		  return this.objetos.size() == 0;
 	  }
+
+	  
+	  
+
 }

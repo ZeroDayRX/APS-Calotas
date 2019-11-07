@@ -8,6 +8,7 @@ import java.awt.FileDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -19,13 +20,18 @@ import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.FileSystem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -47,6 +53,7 @@ import javax.swing.Box;
 import java.awt.Insets;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 
 public class TelaAnimal extends JFrame {
 
@@ -137,24 +144,15 @@ public class TelaAnimal extends JFrame {
 				} else {
 
 					try {
-						FileReader f = new FileReader(dir + filename);
-						BufferedReader lerArq = new BufferedReader(f);
 						final List<String> lines = LerArquivo.carregarLinhas(dir + filename);
 						int i2 = lines.size();
 						final Object[][] dados = new Object[i2][4];
 						for (int i = 0; i < lines.size(); i++) {
 							final String[] data = LerArquivo.lerDados(";", lines.get(i));
-							if (data[0].equalsIgnoreCase("p")) {
-								System.out.println("Entrada como pilha");
-							} else if (data[0].equalsIgnoreCase("f")) {
-								System.out.println("Entrada como fila");
-							} else {
-								System.out.println("Tipo de entrada não reconhecida");
-							}
-							dados[i][0] = data[1];
-							dados[i][1] = data[2];
-							dados[i][2] = data[3];
-							dados[i][3] = data[4];
+							dados[i][0] = data[0];
+							dados[i][1] = data[1];
+							dados[i][2] = data[2];
+							dados[i][3] = data[3];
 						}
 						final MyTableModel tableModel = (MyTableModel) tableConsulta.getModel();
 						tableModel.setDados(dados);
@@ -168,7 +166,7 @@ public class TelaAnimal extends JFrame {
 						cadTable.updateUI();
 						
 						
-					} catch (IOException e) {
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -337,9 +335,23 @@ public class TelaAnimal extends JFrame {
 		btnInc.setBounds(10, 137, 80, 23);
 		pnlCadHeader.add(btnInc);
 		
-		JComboBox entradaMetodo = new JComboBox();
-		entradaMetodo.setBounds(277, 138, 65, 20);
-		pnlCadHeader.add(entradaMetodo);
+		JButton btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//LerArquivo.gravar("");
+				for(int y =0;y<cadTable.getRowCount();y++){
+					String linha = "";
+					for(int x =0;x<cadTable.getColumnCount();x++) {
+						linha = linha+cadTable.getValueAt(y, x)+";";
+						
+					}
+					LerArquivo.p.insere(linha);
+				}
+				LerArquivo.gravar();
+			}		
+		});
+		btnSave.setBounds(284, 137, 89, 23);
+		pnlCadHeader.add(btnSave);
 
 	}
 }

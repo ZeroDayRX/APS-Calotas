@@ -1,24 +1,63 @@
 package Database;
 
+import java.awt.FileDialog;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import Janelas.TelaAnimal;
 
 public class LerArquivo {
-
-    public static void gravar(String path,String texto){
-        File arq = new File(path);
-        try {
+	public static Pilha p = new Pilha();
+	
+    public static void gravar(){
+        try {    		
+    		JFileChooser fileChooser = new JFileChooser();
+    		fileChooser.setDialogTitle("Selecione um local para salvar");
+    		fileChooser.setAcceptAllFileFilterUsed(false);
+    		FileNameExtensionFilter filter = new FileNameExtensionFilter("Arquivos Texto","*.txt");
+    		fileChooser.addChoosableFileFilter(filter);
+    		int userSelection = fileChooser.showSaveDialog(new JFrame());
+    		 
+    		if (userSelection == JFileChooser.APPROVE_OPTION) {
+    		    File fileToSave = fileChooser.getSelectedFile();
+    		    FileWriter arq;
+    			try {
+    				arq = new FileWriter(fileToSave.getAbsolutePath(),true);
+    				BufferedWriter bw = new BufferedWriter(arq);
+    				while(!p.vazia()) {
+    					bw.write(p.remove().toString());
+    					bw.newLine();
+    				}
+    				bw.close();
+    			} catch (IOException e1) {
+    				// TODO Auto-generated catch block
+    				e1.printStackTrace();
+    			}
+    		    
+    		}
+        	
+        	/*
             FileWriter fw = new FileWriter(arq,true);
             BufferedWriter bw = new BufferedWriter(fw);
             bw.write(texto+"\n");
             bw.close();
             fw.close();
-        } catch (IOException e) {
+            */
+        } catch (Exception e) {
 
         }
     }
@@ -47,4 +86,6 @@ public class LerArquivo {
     public static String[] lerDados(String separador, String linha){
         return linha.split(separador);
     }
+    
+    
 }
