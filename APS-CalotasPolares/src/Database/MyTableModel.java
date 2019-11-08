@@ -4,12 +4,12 @@ import javax.swing.table.DefaultTableModel;
 
 public class MyTableModel extends DefaultTableModel {
 
-    public MyTableModel(final Object[][] dados) {
+    public MyTableModel(Object[] dados) {
         super(dados, new String[] {"Id_Animal", "Nome Comum", "Nome Científico","Habitat"});
     }
 
     // usaremos este método para atualizar os dados da JTable
-    public void setDados(final Object[][] dados) {
+    public void setDados(Object[] dados) {
         dataVector = super.convertToVector(dados);
     }
 

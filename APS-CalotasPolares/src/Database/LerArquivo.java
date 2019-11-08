@@ -36,7 +36,7 @@ public class LerArquivo {
     		    File fileToSave = fileChooser.getSelectedFile();
     		    FileWriter arq;
     			try {
-    				arq = new FileWriter(fileToSave.getAbsolutePath(),true);
+    				arq = new FileWriter(fileToSave.getAbsolutePath()+".txt",true);
     				BufferedWriter bw = new BufferedWriter(arq);
     				while(!p.vazia()) {
     					bw.write(p.remove().toString());

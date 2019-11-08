@@ -31,6 +31,7 @@ import java.io.PrintWriter;
 import java.nio.file.FileSystem;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 import javax.swing.GroupLayout;
@@ -62,6 +63,12 @@ public class TelaAnimal extends JFrame {
 	private JTextField edtNComum;
 	private JTextField edtHabitat;
 	private JTextField edtNCientifico;
+	
+	JTabbedPane tabPanel,TabCalotas,TabAnimais;
+	JPanel TabConsultaAnimais,pnlHeader,lblTitle;
+	
+
+
 
 	/**
 	 * Launch the application.
@@ -82,6 +89,9 @@ public class TelaAnimal extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	public static void LimparTable() {
+		
+	}
 	public TelaAnimal() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 600, 500);
@@ -90,23 +100,21 @@ public class TelaAnimal extends JFrame {
 		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
 
-		JTabbedPane tabPanel = new JTabbedPane(JTabbedPane.TOP);
+		tabPanel = new JTabbedPane(JTabbedPane.TOP);
 		tabPanel.setBounds(0, 0, 584, 461);
 		contentPane.add(tabPanel);
-		final Object[][] dados = null;
-		final MyTableModel myTableModel = new MyTableModel(dados);
 
-		JTabbedPane TabCalotas = new JTabbedPane(JTabbedPane.TOP);
+		TabCalotas = new JTabbedPane(JTabbedPane.TOP);
 		tabPanel.addTab("Calotas polares", null, TabCalotas, null);
 
-		JTabbedPane TabAnimais = new JTabbedPane(JTabbedPane.TOP);
+		TabAnimais = new JTabbedPane(JTabbedPane.TOP);
 		tabPanel.addTab("Animais", null, TabAnimais, null);
 
-		JPanel TabConsultaAnimais = new JPanel();
+		TabConsultaAnimais = new JPanel();
 		TabAnimais.addTab("Consulta", null, TabConsultaAnimais, null);
 		TabConsultaAnimais.setLayout(null);
 
-		JPanel pnlHeader = new JPanel();
+		pnlHeader = new JPanel();
 		pnlHeader.setBounds(0, 0, 562, 86);
 		TabConsultaAnimais.add(pnlHeader);
 		pnlHeader.setLayout(null);
@@ -120,14 +128,22 @@ public class TelaAnimal extends JFrame {
 		JPanel pnlTable = new JPanel();
 		pnlTable.setBounds(0, 86, 569, 347);
 		TabConsultaAnimais.add(pnlTable);
-
-		pnlTable.setLayout(new BorderLayout(0, 0));
-		JTable tableConsulta = new javax.swing.JTable(null);
-		tableConsulta.setModel(myTableModel);
-		pnlTable.add(new JScrollPane(tableConsulta), BorderLayout.CENTER);
 		
 		JTable cadTable = new javax.swing.JTable(null);
-		cadTable.setModel(myTableModel);
+		JTable tableConsulta = new javax.swing.JTable(null);
+		
+		DefaultTableModel tableModel = (DefaultTableModel) cadTable.getModel();
+		DefaultTableModel tableModel2 = (DefaultTableModel) tableConsulta.getModel();
+		String[] colunas = { "ID", "Nome Comum", "Nome Cientifico", "Habitat"};
+		tableModel.setColumnIdentifiers(colunas);
+		tableModel2.setColumnIdentifiers(colunas);
+
+		pnlTable.setLayout(new BorderLayout(0, 0));
+		tableConsulta.setModel(tableModel);
+		pnlTable.add(new JScrollPane(tableConsulta), BorderLayout.CENTER);
+		
+		cadTable.setModel(tableModel2);
+		
 
 		JButton btnAbrir = new JButton("Abrir");
 		btnAbrir.addActionListener(new ActionListener() {
@@ -135,6 +151,7 @@ public class TelaAnimal extends JFrame {
 				// Procurar o arquivo texto
 				FileDialog fd = new FileDialog(TelaAnimal.this, "Choose a file", FileDialog.LOAD);
 				fd.setDirectory("C:\\");
+				fd.setFile("*.txt");
 				fd.setVisible(true);
 				String dir = fd.getDirectory();
 				String filename = fd.getFile();
@@ -145,25 +162,31 @@ public class TelaAnimal extends JFrame {
 
 					try {
 						final List<String> lines = LerArquivo.carregarLinhas(dir + filename);
-						int i2 = lines.size();
-						final Object[][] dados = new Object[i2][4];
-						for (int i = 0; i < lines.size(); i++) {
-							final String[] data = LerArquivo.lerDados(";", lines.get(i));
-							dados[i][0] = data[0];
-							dados[i][1] = data[1];
-							dados[i][2] = data[2];
-							dados[i][3] = data[3];
+						String[] i2 = lines.toString().split(";");
+						ArrayList<Object> array = new ArrayList<Object>();
+			
+						for(int x =0;x<i2.length;x++) {
+							array.add(i2[x]);
 						}
-						final MyTableModel tableModel = (MyTableModel) tableConsulta.getModel();
-						tableModel.setDados(dados);
-						final MyTableModel tableModel2 = (MyTableModel) cadTable.getModel();
-						tableModel.setDados(dados);
-						tableModel2.setDados(dados);
-
+						System.out.println(array);
+						String Vetor2[] = array.toString().split(",");
+						String id, Nome,NomeC,Habitat;
+						
+						for(int x = 0;x<Vetor2.length;x=x+4) {
+							id = Vetor2[x];
+							Nome = Vetor2[x+1];
+							NomeC = Vetor2[x+2];
+							Habitat = Vetor2[x+3];
+							Object[] objeto = {id,Nome,NomeC,Habitat};
+							tableModel.addRow(objeto);
+							tableModel2.addRow(objeto);
+						}
+						 tableConsulta.updateUI();
+						 cadTable.updateUI();
+						 JOptionPane.showMessageDialog(null, "Arquivo importado com sucesso !");
+						
 						// notifica o componente de que houve alteração, para que ele atualize
 						// considerando agora os novos dados
-						tableConsulta.updateUI();
-						cadTable.updateUI();
 						
 						
 					} catch (Exception e) {
@@ -194,23 +217,7 @@ public class TelaAnimal extends JFrame {
 		pnlCadHeader.add(lblCadastroDeAnimais);
 
 		JButton btnCadReset = new JButton("Limpar");
-		btnCadReset.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int dialogButton = JOptionPane.showConfirmDialog(null,
-						"Realmente deseja apagar todos os dados da tabela ?");
-				if (dialogButton == JOptionPane.YES_OPTION) {
-					for (int x = tableConsulta.getRowCount() - 1; x >= 0; x--) {
-						((MyTableModel) tableConsulta.getModel()).removeRow(x);
-						((MyTableModel) cadTable.getModel()).removeRow(x);
-					}
-					if (dialogButton == JOptionPane.NO_OPTION) {
-						JOptionPane.showMessageDialog(null, "Operação Cancelada.");
-					}
-				}
-				tableConsulta.updateUI();
-				cadTable.updateUI();
-			}
-		});
+
 		btnCadReset.setBounds(430, 137, 89, 23);
 		pnlCadHeader.add(btnCadReset);
 
@@ -272,10 +279,12 @@ public class TelaAnimal extends JFrame {
 				int dialogButton = JOptionPane.showConfirmDialog(null,
 						"Realmente deseja apagar todos os dados da tabela ?");
 				if (dialogButton == JOptionPane.YES_OPTION) {
-					for (int x = tableConsulta.getRowCount() - 1; x > 0; x--) {
-						((MyTableModel) tableConsulta.getModel()).removeRow(0);
-						//((MyTableModel) cadTable.getModel()).removeRow(x);
+
+					for (int x = tableModel.getRowCount() - 1; x >= 0; x--) {
+						tableModel.removeRow(x);
+						tableModel2.removeRow(x);
 					}
+					
 					if (dialogButton == JOptionPane.NO_OPTION) {
 						JOptionPane.showMessageDialog(null, "Operação Cancelada.");
 					}
@@ -284,46 +293,73 @@ public class TelaAnimal extends JFrame {
 				//cadTable.updateUI();
 			}
 		});
+		btnCadReset.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int dialogButton = JOptionPane.showConfirmDialog(null,
+						"Realmente deseja apagar todos os dados da tabela ?");
+				if (dialogButton == JOptionPane.YES_OPTION) {
+					for (int x = tableConsulta.getRowCount() - 1; x >= 0; x--) {
+						tableModel.removeRow(x);
+						tableModel2.removeRow(x);
+					}
+					
+				}else{
+					System.out.println("Cancelada");
+					JOptionPane.showMessageDialog(null, "Operação Cancelada.");
+				}
+				tableConsulta.updateUI();
+				cadTable.updateUI();
+			}
+		});
+		
 		btnLimpar.setBounds(465, 51, 89, 23);
 		pnlHeader.add(btnLimpar);
 
 		JButton btnInc = new JButton("Adicionar");
 		btnInc.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
+				
+				
 				if (edtCod.getText().isEmpty() || edtNComum.getText().isEmpty() || edtNCientifico.getText().isEmpty()
 						|| edtHabitat.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Campos em branco. Por favor preencha todos os campos.");
 
 				} else {
-					int i = cadTable.getRowCount();
-					final Object[][] dados = new Object[i + 1][4];
-					dados[i][0] = edtCod.getText();
-					dados[i][1] = edtNComum.getText();
-					dados[i][2] = edtNCientifico.getText();
-					dados[i][3] = edtHabitat.getText();
-
-					final MyTableModel tableModel = (MyTableModel) cadTable.getModel();
-					tableModel.setDados(dados);
-					final MyTableModel tableModel2 = (MyTableModel) tableConsulta.getModel();
-					tableModel2.setDados(dados);
-					// notifica o componente de que houve alteração, para que ele atualize
-					// considerando agora os novos dados
-					cadTable.updateUI();
-					tableConsulta.updateUI();
+					String id = edtCod.getText();
+					String Name = edtNComum.getText();
+					String NameC = edtNCientifico.getText();
+					String Habitat = edtHabitat.getText();
+					
+					Object[] objeto = {id,Name,NameC,Habitat};
+					tableModel.addRow(objeto);
+					tableModel2.addRow(objeto);
 					
 					edtCod.setText(null);
 					edtNComum.setText(null);
 					edtNCientifico.setText(null);
 					edtHabitat.setText(null);
+					
+					
+					
 				}
 
 			}
+			
 		});
 
 		JButton btnDel = new JButton("Deletar");
 		btnDel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				((MyTableModel) cadTable.getModel()).removeRow(cadTable.getSelectedRow());
+				int linha = cadTable.getSelectedRow();
+				if(linha < 0) {
+					tableModel.removeRow(cadTable.getRowCount()-1);
+					tableModel2.removeRow(cadTable.getRowCount()-1);
+				}else {
+					tableModel.removeRow(linha);
+					tableModel2.removeRow(linha);
+					
+				}
 				cadTable.updateUI();
 			}
 		});
@@ -354,4 +390,6 @@ public class TelaAnimal extends JFrame {
 		pnlCadHeader.add(btnSave);
 
 	}
+	
+	
 }

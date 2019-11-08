@@ -14,7 +14,9 @@ public class Fila<T> {
 	  public T remove() {
 	    return this.objetos.remove(0);
 	  }
-
+	  public List<T> getFila() {
+		  return objetos;
+	  }
 	  public boolean vazia() {
 	    return this.objetos.size() == 0;
 	  }
