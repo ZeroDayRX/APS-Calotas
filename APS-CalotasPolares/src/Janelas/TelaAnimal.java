@@ -143,8 +143,7 @@ public class TelaAnimal extends JFrame {
 		pnlTable.add(new JScrollPane(tableConsulta), BorderLayout.CENTER);
 		
 		cadTable.setModel(tableModel2);
-		
-
+        
 		JButton btnAbrir = new JButton("Abrir");
 		btnAbrir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -161,6 +160,7 @@ public class TelaAnimal extends JFrame {
 				} else {
 
 					try {
+						DB.connect("banco.db");
 						final List<String> lines = LerArquivo.carregarLinhas(dir + filename);
 						String[] i2 = lines.toString().split(";");
 						ArrayList<Object> array = new ArrayList<Object>();
@@ -172,14 +172,19 @@ public class TelaAnimal extends JFrame {
 						String Vetor2[] = array.toString().split(",");
 						String id, Nome,NomeC,Habitat;
 						
-						for(int x = 0;x<Vetor2.length;x=x+4) {
+						for(int x = 0;x<Vetor2.length;x=x+5) {
 							id = Vetor2[x];
 							Nome = Vetor2[x+1];
 							NomeC = Vetor2[x+2];
 							Habitat = Vetor2[x+3];
+							String sub = id.substring(0,2); 
+							if (sub.equals("[[")) {
+								id = id.substring(2);
+							}
 							Object[] objeto = {id,Nome,NomeC,Habitat};
 							tableModel.addRow(objeto);
 							tableModel2.addRow(objeto);
+							insertDB(id,Nome,NomeC,Habitat);
 						}
 						 tableConsulta.updateUI();
 						 cadTable.updateUI();
@@ -279,8 +284,10 @@ public class TelaAnimal extends JFrame {
 				int dialogButton = JOptionPane.showConfirmDialog(null,
 						"Realmente deseja apagar todos os dados da tabela ?");
 				if (dialogButton == JOptionPane.YES_OPTION) {
-
+                    DB.connect("banco.db");
 					for (int x = tableModel.getRowCount() - 1; x >= 0; x--) {
+						String id = tableModel.getValueAt(x, 0).toString();
+						deleteDB(id);
 						tableModel.removeRow(x);
 						tableModel2.removeRow(x);
 					}
@@ -298,7 +305,10 @@ public class TelaAnimal extends JFrame {
 				int dialogButton = JOptionPane.showConfirmDialog(null,
 						"Realmente deseja apagar todos os dados da tabela ?");
 				if (dialogButton == JOptionPane.YES_OPTION) {
+					DB.connect("banco.db");
 					for (int x = tableConsulta.getRowCount() - 1; x >= 0; x--) {
+						String id = tableModel.getValueAt(x, 0).toString();
+						deleteDB(id);
 						tableModel.removeRow(x);
 						tableModel2.removeRow(x);
 					}
@@ -318,14 +328,13 @@ public class TelaAnimal extends JFrame {
 		JButton btnInc = new JButton("Adicionar");
 		btnInc.addActionListener(new ActionListener() {
 			
-			public void actionPerformed(ActionEvent e) {
-				
-				
+			public void actionPerformed(ActionEvent e) {								
 				if (edtCod.getText().isEmpty() || edtNComum.getText().isEmpty() || edtNCientifico.getText().isEmpty()
 						|| edtHabitat.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Campos em branco. Por favor preencha todos os campos.");
 
 				} else {
+					DB.connect("banco.db");
 					String id = edtCod.getText();
 					String Name = edtNComum.getText();
 					String NameC = edtNCientifico.getText();
@@ -334,6 +343,7 @@ public class TelaAnimal extends JFrame {
 					Object[] objeto = {id,Name,NameC,Habitat};
 					tableModel.addRow(objeto);
 					tableModel2.addRow(objeto);
+					insertDB(id,Name,NameC,Habitat);
 					
 					edtCod.setText(null);
 					edtNComum.setText(null);
@@ -351,7 +361,9 @@ public class TelaAnimal extends JFrame {
 		JButton btnDel = new JButton("Deletar");
 		btnDel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				DB.connect("banco.db");
 				int linha = cadTable.getSelectedRow();
+				String id = tableModel.getValueAt(linha, 0).toString();
 				if(linha < 0) {
 					tableModel.removeRow(cadTable.getRowCount()-1);
 					tableModel2.removeRow(cadTable.getRowCount()-1);
@@ -360,6 +372,7 @@ public class TelaAnimal extends JFrame {
 					tableModel2.removeRow(linha);
 					
 				}
+				deleteDB(id);
 				cadTable.updateUI();
 			}
 		});
@@ -388,8 +401,18 @@ public class TelaAnimal extends JFrame {
 		});
 		btnSave.setBounds(284, 137, 89, 23);
 		pnlCadHeader.add(btnSave);
-
+		
 	}
-	
-	
+	public void insertDB(String id,String nome, String nomec,String habitat) {
+		String query = "insert into Animal ('Id_Animal','NomeComum','NomeCientifico','Habitat') values (";
+		query = query + "'" + id + "',";
+		query = query + "'" + nome + "',";
+		query = query + "'" + nomec + "',";
+		query = query + "'" + nomec + "');";
+		DB.execQuery(query);
+	}
+	public void deleteDB(String id) {
+		String query = "delete from Animal where Id_Animal = " + "'" + id +"'";
+		DB.execQuery(query);
+	}
 }
