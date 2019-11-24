@@ -29,6 +29,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.FileSystem;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -63,9 +65,12 @@ public class TelaAnimal extends JFrame {
 	private JTextField edtNComum;
 	private JTextField edtHabitat;
 	private JTextField edtNCientifico;
+
 	
-	JTabbedPane tabPanel,TabCalotas,TabAnimais;
+	JTabbedPane tabPanel,TabAnimais;
 	JPanel TabConsultaAnimais,pnlHeader,lblTitle;
+	DefaultTableModel tableModel;
+	DefaultTableModel tableModel2;
 	
 
 
@@ -92,9 +97,10 @@ public class TelaAnimal extends JFrame {
 	public static void LimparTable() {
 		
 	}
-	public TelaAnimal() {
+	public TelaAnimal() throws SQLException {
+		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 600, 500);
+		setBounds(100, 100, 600, 554);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -103,9 +109,6 @@ public class TelaAnimal extends JFrame {
 		tabPanel = new JTabbedPane(JTabbedPane.TOP);
 		tabPanel.setBounds(0, 0, 584, 461);
 		contentPane.add(tabPanel);
-
-		TabCalotas = new JTabbedPane(JTabbedPane.TOP);
-		tabPanel.addTab("Calotas polares", null, TabCalotas, null);
 
 		TabAnimais = new JTabbedPane(JTabbedPane.TOP);
 		tabPanel.addTab("Animais", null, TabAnimais, null);
@@ -132,8 +135,8 @@ public class TelaAnimal extends JFrame {
 		JTable cadTable = new javax.swing.JTable(null);
 		JTable tableConsulta = new javax.swing.JTable(null);
 		
-		DefaultTableModel tableModel = (DefaultTableModel) cadTable.getModel();
-		DefaultTableModel tableModel2 = (DefaultTableModel) tableConsulta.getModel();
+		tableModel = (DefaultTableModel) cadTable.getModel();
+		tableModel2 = (DefaultTableModel) tableConsulta.getModel();
 		String[] colunas = { "ID", "Nome Comum", "Nome Cientifico", "Habitat"};
 		tableModel.setColumnIdentifiers(colunas);
 		tableModel2.setColumnIdentifiers(colunas);
@@ -168,12 +171,11 @@ public class TelaAnimal extends JFrame {
 						for(int x =0;x<i2.length;x++) {
 							array.add(i2[x]);
 						}
-						System.out.println(array);
 						String Vetor2[] = array.toString().split(",");
 						String id, Nome,NomeC,Habitat;
 						
 						for(int x = 0;x<Vetor2.length;x=x+5) {
-							id = Vetor2[x];
+								id = Vetor2[x];
 							Nome = Vetor2[x+1];
 							NomeC = Vetor2[x+2];
 							Habitat = Vetor2[x+3];
@@ -190,7 +192,7 @@ public class TelaAnimal extends JFrame {
 						 cadTable.updateUI();
 						 JOptionPane.showMessageDialog(null, "Arquivo importado com sucesso !");
 						
-						// notifica o componente de que houve alteração, para que ele atualize
+						// notifica o componente de que houve alteraï¿½ï¿½o, para que ele atualize
 						// considerando agora os novos dados
 						
 						
@@ -293,7 +295,7 @@ public class TelaAnimal extends JFrame {
 					}
 					
 					if (dialogButton == JOptionPane.NO_OPTION) {
-						JOptionPane.showMessageDialog(null, "Operação Cancelada.");
+						JOptionPane.showMessageDialog(null, "Operaï¿½ï¿½o Cancelada.");
 					}
 				}
 				tableConsulta.updateUI();
@@ -315,7 +317,7 @@ public class TelaAnimal extends JFrame {
 					
 				}else{
 					System.out.println("Cancelada");
-					JOptionPane.showMessageDialog(null, "Operação Cancelada.");
+					JOptionPane.showMessageDialog(null, "Operaï¿½ï¿½o Cancelada.");
 				}
 				tableConsulta.updateUI();
 				cadTable.updateUI();
@@ -324,11 +326,35 @@ public class TelaAnimal extends JFrame {
 		
 		btnLimpar.setBounds(465, 51, 89, 23);
 		pnlHeader.add(btnLimpar);
+		
+		JButton btnBubble = new JButton("bubble");
+		btnBubble.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					Bubble b = new Bubble();
+					b.setVisible(true);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		btnBubble.setBounds(239, 51, 89, 23);
+		pnlHeader.add(btnBubble);
+		
+		JButton btnSelection = new JButton("Selection");
+		btnSelection.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Selection s = new Selection();
+				s.setVisible(true);
+			}
+		});
+		btnSelection.setBounds(348, 51, 89, 23);
+		pnlHeader.add(btnSelection);
 
 		JButton btnInc = new JButton("Adicionar");
 		btnInc.addActionListener(new ActionListener() {
 			
-			public void actionPerformed(ActionEvent e) {								
+			public void actionPerformed(ActionEvent e) {
 				if (edtCod.getText().isEmpty() || edtNComum.getText().isEmpty() || edtNCientifico.getText().isEmpty()
 						|| edtHabitat.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "Campos em branco. Por favor preencha todos os campos.");
@@ -342,7 +368,7 @@ public class TelaAnimal extends JFrame {
 					
 					Object[] objeto = {id,Name,NameC,Habitat};
 					tableModel.addRow(objeto);
-					tableModel2.addRow(objeto);
+					tableModel2.addRow(objeto);					
 					insertDB(id,Name,NameC,Habitat);
 					
 					edtCod.setText(null);
@@ -387,21 +413,20 @@ public class TelaAnimal extends JFrame {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//LerArquivo.gravar("");
 				for(int y =0;y<cadTable.getRowCount();y++){
 					String linha = "";
 					for(int x =0;x<cadTable.getColumnCount();x++) {
 						linha = linha+cadTable.getValueAt(y, x)+";";
-						
 					}
-					LerArquivo.p.insere(linha);
+					LerArquivo.p.push(linha);
+					LerArquivo.f.push(linha);
 				}
-				LerArquivo.gravar();
+				LerArquivo.gravar("NaoOrdenado");
 			}		
 		});
 		btnSave.setBounds(284, 137, 89, 23);
 		pnlCadHeader.add(btnSave);
-		
+		puxaBanco();
 	}
 	public void insertDB(String id,String nome, String nomec,String habitat) {
 		String query = "insert into Animal ('Id_Animal','NomeComum','NomeCientifico','Habitat') values (";
@@ -415,4 +440,21 @@ public class TelaAnimal extends JFrame {
 		String query = "delete from Animal where Id_Animal = " + "'" + id +"'";
 		DB.execQuery(query);
 	}
+
+	public void puxaBanco() throws SQLException {
+		DB.connect("banco.db");
+		ResultSet rs = DB.query("select * from Animal");
+
+		while(rs.next()){
+			int id = rs.getInt("Id_Animal");
+			String Nomec = rs.getString("NomeComum");
+			String NomeCin = rs.getString("NomeCientifico");
+			String Habit = rs.getString("Habitat");
+			Object[] banc = {id,Nomec,NomeCin,Habit};
+			tableModel.addRow(banc);
+			tableModel2.addRow(banc);
+		}
+
+	}
+
 }

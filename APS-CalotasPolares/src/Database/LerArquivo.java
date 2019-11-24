@@ -22,8 +22,9 @@ import Janelas.TelaAnimal;
 
 public class LerArquivo {
 	public static Pilha p = new Pilha();
+	public static Fila<Object> f = new Fila<Object>();
 	
-    public static void gravar(){
+    public static void gravar(String meio){
         try {    		
     		JFileChooser fileChooser = new JFileChooser();
     		fileChooser.setDialogTitle("Selecione um local para salvar");
@@ -35,17 +36,30 @@ public class LerArquivo {
     		if (userSelection == JFileChooser.APPROVE_OPTION) {
     		    File fileToSave = fileChooser.getSelectedFile();
     		    FileWriter arq;
+    		    
     			try {
-    				arq = new FileWriter(fileToSave.getAbsolutePath()+".txt",true);
+    				arq = new FileWriter(fileToSave.getAbsolutePath()+"-"+meio+"-fila.txt",true);
     				BufferedWriter bw = new BufferedWriter(arq);
-    				while(!p.vazia()) {
-    					bw.write(p.remove().toString());
+    				while(!f.vazia()) {
+    					bw.write(f.pop().toString());
     					bw.newLine();
     				}
     				bw.close();
     			} catch (IOException e1) {
     				// TODO Auto-generated catch block
     				e1.printStackTrace();
+    			}
+    			
+    			try {
+    				arq = new FileWriter(fileToSave.getAbsolutePath()+"-pilha.txt",true);
+    				BufferedWriter bw = new BufferedWriter(arq);
+    				while(!p.vazia()) {
+    					bw.write(p.pop().toString());
+    					bw.newLine();
+    				}
+    				bw.close();
+    			}catch(IOException e2) {
+    				e2.printStackTrace();
     			}
     		    
     		}

@@ -3,20 +3,21 @@ package Database;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Fila<T> {
+public class Fila<object> {
 
-	  private List<T> objetos = new LinkedList<T>();
+	  private List<object> objetos = new LinkedList<object>();
 
-	  public void insere(T t) {
+	  public void push(object t) {
 	    this.objetos.add(t);
 	  }
 
-	  public T remove() {
+	  public object pop() {
 	    return this.objetos.remove(0);
 	  }
-	  public List<T> getFila() {
+	  public List<object> getFila() {
 		  return objetos;
 	  }
+
 	  public boolean vazia() {
 	    return this.objetos.size() == 0;
 	  }
